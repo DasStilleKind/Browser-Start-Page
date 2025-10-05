@@ -1,381 +1,96 @@
-// --- Uhrzeit aktualisieren ---
-function updateTime() {
-  const timeElement = document.getElementById('timeElement');
-  const currentDate = new Date();
+const WEATHER_API_KEY = "1f17a1106802f64bcffd99f82c85e610"; // Deinen Key hier einsetzen
+const CITY = "Delligsen,DE";
 
-  let hours = currentDate.getHours();
-  const minutes = currentDate.getMinutes();
-  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-
-  const formattedTime = `${hours}:${formattedMinutes}`;
-  timeElement.textContent = formattedTime;
+// Uhr & Datum
+function updateClock() {
+  const now = new Date();
+  const time = now.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  const date = now.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  document.getElementById("clock").textContent = time;
+  document.getElementById("date").textContent = date;
 }
+setInterval(updateClock, 1000);
+updateClock();
 
-setInterval(updateTime, 1000);
-updateTime();
+// Shortcuts öffnen
+document.querySelectorAll(".shortcut").forEach(btn => {
+  btn.addEventListener("click", () => window.open(btn.dataset.url, "_blank"));
+});
 
-// --- Datum anzeigen ---
-const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const today = new Date();
-const dayOfWeek = days[today.getDay()];
-const dateOfMonth = today.getDate();
-const formattedDate = `${dayOfWeek} ${dateOfMonth}`;
-document.getElementById('currentDay').textContent = formattedDate;
+// Suchvorschläge (Google Suggest)
+const searchInput = document.getElementById("search");
+const suggestions = document.getElementById("suggestions");
 
-// --- Wetter API mit festem Cityname 'Delligsen' ---
-const apiKey = 'db5a5dd4233284f22f468c35dad5f8ff';
-
-async function getWeather() {
-  const fixedCity = 'Delligsen';
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${fixedCity}&appid=${apiKey}&units=metric`;
-  const response = await fetch(url);
-  const data = await response.json();
-
-  if (data.cod === 200) {
-    const cityName = data.name;
-    const temperature = Math.round(data.main.temp);
-    const description = data.weather[0].description;
-    const icon = data.weather[0].icon;
-
-    updateWeatherInfo(cityName, temperature, description, icon);
-  } else {
-    console.log('City not found. Please check the city name and try again.');
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+  if (!query) {
+    suggestions.style.display = "none";
+    return;
   }
-}
 
-function updateWeatherInfo(cityName, temperature, description, icon) {
-  document.getElementById('city-name').textContent = cityName;
-  document.getElementById('temperature').textContent = `${temperature}°`;
-  document.getElementById('description').textContent = description;
+  const res = await fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`);
+  const data = await res.json();
+  const results = data[1];
 
-  // Icon aus festem Verzeichnis laden (z.B. /icons/01d.png)
-  const iconUrl = `/icons/${icon}.png`;
-  document.getElementById('weather-icon').src = iconUrl;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  getWeather();
-});
-
-// --- Name fest auf "Lennart" ---
-window.onload = function() {
-  document.getElementById('name').textContent = 'Lennart';
-};
-
-// --- Hintergrundbild Checkbox ---
-const checkbox = document.getElementById('backgroundToggle');
-
-function setBackground() {
-    const imageUrl = 'https://picsum.photos/1920/1080/?random&blur';
-    document.documentElement.style.backgroundImage = `url(${imageUrl})`;
-    document.documentElement.style.backgroundSize = 'cover';
-}
-
-function handleCheckboxChange() {
-    if (checkbox.checked) {
-        localStorage.setItem('backgroundToggle', 'checked');
-        setBackground();
-    } else {
-        localStorage.removeItem('backgroundToggle');
-        document.body.style.backgroundImage = '';
-        document.body.style.backgroundColor = '#121212';
-    }
-}
-
-if (localStorage.getItem('backgroundToggle') === 'checked') {
-    checkbox.checked = true;
-    setBackground();
-}
-
-checkbox.addEventListener('change', handleCheckboxChange);
-
-setInterval(() => {
-    if (checkbox.checked) {
-        setBackground();
-    }
-}, 3600000);
-
-// --- Farbe setzen und speichern ---
-function setColorAndStore(color) {
-    document.documentElement.style.setProperty('--accent', color);
-    localStorage.setItem('selectedColor', color);
-}
-
-document.getElementById('colorPicker').addEventListener('input', function() {
-    let selectedColor = this.value;
-    setColorAndStore(selectedColor);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    let storedColor = localStorage.getItem('selectedColor');
-    if (storedColor) {
-        setColorAndStore(storedColor);
-    }
-});
-
-// --- Farbe mit RGBA für srcbar ---
-function setColorAndStor(color) {
-    document.documentElement.style.setProperty('--srcbar', color);
-    localStorage.setItem('selectedColo', color);
-}
-
-document.getElementById('colorPicker').addEventListener('input', function() {
-    let hexColor = this.value;
-    let rgbaColor = hexToRgba(hexColor, 0.429);
-    setColorAndStor(rgbaColor);
-});
-
-function hexToRgba(hex, alpha) {
-    hex = hex.replace(/^#/, '');
-    let bigint = parseInt(hex, 16);
-    let r = (bigint >> 16) & 255;
-    let g = (bigint >> 8) & 255;
-    let b = bigint & 255;
-    return `rgba(${r},${g},${b},${alpha})`;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    let storedColo = localStorage.getItem('selectedColo');
-    if (storedColo) {
-        setColorAndStor(storedColo);
-    }
-});
-
-// --- News Toggle ---
-document.addEventListener('DOMContentLoaded', function () {
-    var checkbox = document.getElementById('toggle');
-    var container = document.querySelector('.container');
-
-    var isChecked = localStorage.getItem('newsDisabled') === 'true';
-    checkbox.checked = isChecked;
-    updateContainerVisibility(isChecked);
-
-    function updateContainerVisibility(disabled) {
-        container.style.display = disabled ? "none" : "flex";
-    }
-
-    checkbox.addEventListener('change', function() {
-        var isChecked = checkbox.checked;
-        localStorage.setItem('newsDisabled', isChecked);
-        updateContainerVisibility(isChecked);
-    });
-});
-
-// --- Sticky Search Container ---
-window.addEventListener('scroll', function() {
-    var searchContainer = document.getElementById('searchContainer');
-    if (window.pageYOffset > 310) {
-        searchContainer.classList.add('sticky');
-    } else {
-        searchContainer.classList.remove('sticky');
-    }
-});
-
-// --- Links Verwaltung ---
-let deleteMode = false;
-
-function toggleDeleteMode() {
-    deleteMode = !deleteMode;
-    const linkContainers = document.querySelectorAll('.link-container');
-    linkContainers.forEach(container => {
-        const deleteButton = container.querySelector('.delete-button');
-        deleteButton.style.display = deleteMode ? 'block' : 'none';
-        container.classList.toggle('delete-mode', deleteMode);
-    });
-}
-
-function addLink() {
-    const url = document.getElementById('urlInput').value;
-    if (!url) return;
-
-    const faviconUrl = `https://www.google.com/s2/favicons?domain=${url}`;
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.innerHTML = `<img src="${faviconUrl}" alt="icon">`;
-
-    const deleteButton = document.createElement('button');
-    deleteButton.innerHTML = 'X';
-    deleteButton.className = 'delete-button';
-    deleteButton.style.display = deleteMode ? 'block' : 'none';
-    deleteButton.onclick = function() {
-        deleteLink(url);
+  suggestions.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.textContent = r;
+    li.onclick = () => {
+      window.open(`https://www.google.com/search?q=${encodeURIComponent(r)}`, "_blank");
     };
-
-    const linkContainer = document.createElement('div');
-    linkContainer.className = 'link-container';
-    linkContainer.appendChild(link);
-    linkContainer.appendChild(deleteButton);
-
-    document.getElementById('iconsContainer').appendChild(linkContainer);
-
-    const links = JSON.parse(localStorage.getItem('links')) || [];
-    links.push({ url: url });
-    localStorage.setItem('links', JSON.stringify(links));
-
-    document.getElementById('urlInput').value = '';
-}
-
-function loadLinks() {
-    const links = JSON.parse(localStorage.getItem('links')) || [];
-    const iconsContainer = document.getElementById('iconsContainer');
-
-    links.forEach(linkData => {
-        const faviconUrl = `https://www.google.com/s2/favicons?domain=${linkData.url}`;
-
-        const link = document.createElement('a');
-        link.href = linkData.url;
-        link.target = '_blank';
-        link.innerHTML = `<img src="${faviconUrl}" alt="icon">`;
-
-        const deleteButton = document.createElement('button');
-        deleteButton.innerHTML = 'X';
-        deleteButton.className = 'delete-button';
-        deleteButton.style.display = deleteMode ? 'block' : 'none';
-        deleteButton.onclick = function() {
-            deleteLink(linkData.url);
-        };
-
-        const linkContainer = document.createElement('div');
-        linkContainer.className = 'link-container';
-        linkContainer.appendChild(link);
-        linkContainer.appendChild(deleteButton);
-
-        iconsContainer.appendChild(linkContainer);
-    });
-}
-
-function deleteLink(url) {
-    const iconsContainer = document.getElementById('iconsContainer');
-    const linkContainers = iconsContainer.getElementsByClassName('link-container');
-
-    for (let i = 0; i < linkContainers.length; i++) {
-        const link = linkContainers[i].getElementsByTagName('a')[0];
-        if (link && link.href === url) {
-            iconsContainer.removeChild(linkContainers[i]);
-            break;
-        }
-    }
-
-    let links = JSON.parse(localStorage.getItem('links')) || [];
-    links = links.filter(linkData => linkData.url !== url);
-    localStorage.setItem('links', JSON.stringify(links));
-}
-
-window.onload = loadLinks;
-
-// --- Suchmaschinen Auswahl ---
-const searchEngineSelector = document.getElementById('searchEngine');
-const searchForm = document.getElementById('searchForm');
-const searchInput = document.getElementById('searchInput');
-
-const savedEngine = localStorage.getItem('selectedSearchEngine');
-if (savedEngine) {
-  searchEngineSelector.value = savedEngine;
-  searchForm.action = savedEngine;
-  const selectedOptionText = searchEngineSelector.options[searchEngineSelector.selectedIndex].text.trim();
-  searchInput.placeholder = `Search on ${selectedOptionText}...`;
-}
-
-searchEngineSelector.addEventListener('change', function() {
-  const selectedEngine = this.value;
-  searchForm.action = selectedEngine;
-  const selectedOptionText = this.options[this.selectedIndex].text.trim();
-  searchInput.placeholder = `Search on ${selectedOptionText}...`;
-  localStorage.setItem('selectedSearchEngine', selectedEngine);
+    suggestions.appendChild(li);
+  });
+  suggestions.style.display = "block";
 });
 
-searchInput.addEventListener('keypress', function(event) {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    searchForm.submit();
+document.addEventListener("click", e => {
+  if (!searchInput.contains(e.target)) suggestions.style.display = "none";
+});
+
+// Google News
+async function loadNews() {
+  const url = "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://news.google.com/rss?hl=de&gl=DE&ceid=DE:de");
+  const res = await fetch(url);
+  const text = await res.text();
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(text, "text/xml");
+  const items = xml.querySelectorAll("item");
+  const newsDiv = document.getElementById("news");
+  newsDiv.innerHTML = "";
+
+  items.forEach((item, i) => {
+    if (i > 5) return;
+    const a = document.createElement("a");
+    a.href = item.querySelector("link").textContent;
+    a.textContent = item.querySelector("title").textContent;
+    a.target = "_blank";
+    newsDiv.appendChild(a);
+  });
+}
+loadNews();
+
+// Wetter
+async function loadWeather() {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${WEATHER_API_KEY}&units=metric&lang=de`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const weatherDiv = document.getElementById("weather");
+  if (data.cod !== 200) {
+    weatherDiv.textContent = "Fehler beim Laden des Wetters.";
+    return;
   }
-});
 
-document.getElementById('searchInput').addEventListener('input', function() {
-    let query = this.value;
-
-    if (query.length > 0) {
-        fetchSuggestions(query);
-    } else {
-        clearSuggestions();
-    }
-});
-
-function fetchSuggestions(query) {
-    const url = `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(query)}&callback=handleSuggestions`;
-
-    const script = document.createElement('script');
-    script.src = url;
-    document.body.appendChild(script);
-    document.body.removeChild(script);
+  const icon = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+  weatherDiv.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="${icon}" alt="${data.weather[0].description}" />
+      <div>
+        <div><strong>${data.name}</strong></div>
+        <div>${data.main.temp.toFixed(1)}°C – ${data.weather[0].description}</div>
+      </div>
+    </div>
+  `;
 }
-
-function handleSuggestions(data) {
-    displaySuggestions(data[1]);
-}
-
-function displaySuggestions(suggestions) {
-    const suggestionsList = document.getElementById('suggestions');
-    clearSuggestions();
-
-    suggestions.forEach(suggestion => {
-        const suggestionItem = document.createElement('p');
-        suggestionItem.textContent = suggestion;
-        suggestionItem.classList.add('suggestion-item');
-        suggestionItem.addEventListener('click', function() {
-            document.getElementById('searchInput').value = suggestion;
-            clearSuggestions();
-            document.getElementById('searchForm').submit();
-        });
-        suggestionsList.appendChild(suggestionItem);
-    });
-}
-
-function clearSuggestions() {
-    const suggestionsList = document.getElementById('suggestions');
-    suggestionsList.innerHTML = '';
-}
-
-// --- Avatar Upload ---
-const avatar = document.querySelector('.avatar');
-const fileInput = document.getElementById('file-input');
-
-const storedImage = localStorage.getItem('uploadedAvatar');
-if (storedImage) {
-    avatar.src = storedImage;
-}
-
-avatar.addEventListener('click', () => {
-    fileInput.click();
-});
-
-fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const result = e.target.result;
-            avatar.src = result;
-            localStorage.setItem('uploadedAvatar', result);
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// --- Tabs ---
-function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
-document.getElementById("defaultOpen").click();
+loadWeather();
