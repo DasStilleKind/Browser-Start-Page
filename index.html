@@ -1,187 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-	<title>Homepage</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="color-scheme" content="dark only">
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<link rel="icon" type="image/x-icon" href="https://th.bing.com/th/id/OIG3.5JGgDacnzEjeXwqpaOaC?dpr=2&pid=ImgDetMain">
-
-	
-	<script src="https://kit.fontawesome.com/5020fb7aee.js" crossorigin="anonymous"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Startseite</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
-
 <body>
-
-  
-
-
-
-    
-    <div class="greet">
-      <img class="avatar" src="Avatar.svg" alt="avatar">
-     <h2 class="hello">Hello, 
-         <button onclick="showPopup()"> <span id="name">Lennart</span></h2></button>
-    </div>
-    <input type="file" id="file-input" accept="image/*">
-    
-<div class="search" id="searchContainer">
-    <form id="searchForm" class="engine" action="https://www.google.com/search">
-       <input class="search-bar" type="text" name="q" id="searchInput" list="suggestions" placeholder="Search on Google..." autocomplete="on">
-       <div id="suggestions"></div>
-    </form>
-            <select class="search-engine-selector" id="searchEngine">
-          <option value="https://www.google.com/search">Google</option>
-          <option value="https://www.perplexity.ai/search">Perplexity</option>
-          <option value="https://www.bing.com/search">Bing</option>
-        </select>
-      
-  </div>
-
-
-  
-  <div class="icons" id="iconsContainer">
-   
-  
-       <a href="https://m.youtube.com"><i class="fa-brands fa-youtube"></i></a>
-       
-         <a href="https://news.google.com"><i class="fa-solid fa-newspaper"></i></a>
-         
-         <a href="https://onlinenotepad.org/notepad"><i class="fa-solid fa-note-sticky"></i></a>
-         
-         <a href="https://labs.perplexity.ai/"><i class="fa-solid fa-comment-dots"></i></a>
-         
-         
-         <button class="Delete" onclick="toggleDeleteMode()"><i class="fa-solid fa-eraser"></i></button>
-
-
-
-  </div>
- 
-
- <div class="wrapper">
-
-   
-  <div class="weather">
-    <img id="weather-icon" src="" alt="Weather Icon">
-       <p id="city-name"></p>
-       
-    <p id="temperature"></p>
- <p id="description"></p>
-  
-  </div>
-  <div class="time">
-  <p id="currentDay"></p>
-    <p id="timeElement"></p>
-    </div>
-  
-   </div>
-  
-  <div id="overlay" class="overlay"></div>
-  <div id="popup" class="popup">
-  <input placeholder="Enter new name...." type="text" id="newName">
-  <button class="update" onclick="updateName()">Update</button>
-   <button onclick="closePopup()">Close</button>
-</div>
-  
-  <div class="bg">
- <div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'General')" id="defaultOpen">General</button>
-  <button class="tablinks" onclick="openTab(event, 'Tech')">Tech</button>
-  <button class="tablinks" onclick="openTab(event, 'Sports')">Sports</button>
-  <button class="tablinks" onclick="openTab(event, 'Business')">Business</button>
-</div>
-
-<div id="General" class="tabcontent">
   <div class="container">
-   <script src="//rss.bloople.net/?url=https%3A%2F%2Fnews.google.com%2Frss%3Fhl%3Den-IN%26gl%3DIN%26ceid%3DIN%3Aen&detail=-1&limit=10&showempty=true&type=js"></script>
-  </div>
-</div>
-
-<div id="Tech" class="tabcontent">
-  <div class="container">
-  <script src="//rss.bloople.net/?url=https%3A%2F%2Fnews.google.com%2Frss%2Ftopics%2FCAAqKggKIiRDQkFTRlFvSUwyMHZNRGRqTVhZU0JXVnVMVWRDR2dKSlRpZ0FQAQ%3Fhl%3Den-IN%26gl%3DIN%26ceid%3DIN%253Aen&detail=-1&limit=10&type=js"></script>
-  </div>
-</div>
-
-<div id="Sports" class="tabcontent">
-  <div class="container">
-  <script src="//rss.bloople.net/?url=https%3A%2F%2Fnews.google.com%2Frss%2Ftopics%2FCAAqKggKIiRDQkFTRlFvSUwyMHZNRFp1ZEdvU0JXVnVMVWRDR2dKSlRpZ0FQAQ%3Fhl%3Den-IN%26gl%3DIN%26ceid%3DIN%253Aen&detail=-1&limit=10&type=js"></script>
-  </div>
-</div>
-
-<div id="Business" class="tabcontent">
-  <div class="container">
- <script src="//rss.bloople.net/?url=https%3A%2F%2Fnews.google.com%2Frss%2Ftopics%2FCAAqKQgKIiNDQkFTRkFvTEwyY3ZNVEl4YW01eE1XMFNCV1Z1TFVkQ0tBQVAB%3Fhl%3Den-IN%26gl%3DIN%26ceid%3DIN%253Aen&detail=-1&limit=10&type=js"></script>
-  </div>
-</div>
-</div>
-    
-      <div class="settings">
-        <h2>Settings</h2>
-        <ul class="setList">
-          
-          
-        <li class="1set">
-          <div class="wrap">
-          <p>Disable News</p>
-          <label class="switch">
-  <input type="checkbox" id="toggle">
-  <span class="slider round"></span>
-</label>
-</div>
-        </li>
-        
-                <li class="2set">
-                  <div class="wrap">
-          <p>Custom Accent Color</p>
-         <input type="color" id="colorPicker" value="#BBDEFB">
-         </div>
-        </li>
-        
-        <li class="3set">
-           <div class="city">
-    <input type="text" id="city-input" placeholder="Enter city name">
-    <button onclick="handleCitySearch()">Search</button>
-    </div>
-        </li>
-        
-        
-        <li class="4set">
-          <div class="wrap">
-          <p>Background</p> <label class="switch">
-        <input type="checkbox" id="backgroundToggle">
-        <span class="slider round"></span>
-</label>
-</div>
-        </li>
-        
-        
-        <li class="5set">
-          <div class="wrap">
-            <input type="text" id="urlInput" placeholder="Enter URL to add icons">
-<button class="link" onclick="addLink()">Add Link</button>
-          </div>
-        </li>
-        
-        
-        </ul>
+    <header>
+      <div class="datetime">
+        <div id="clock">--:--</div>
+        <div id="date">--</div>
       </div>
+    </header>
 
-<footer class="foot">
-  <div class="Link">
-  <a href="mailto:ronakameta65@gmail.com"><i class="fa-solid fa-envelope"></i></a>
-  <a href="https://github.com/Ronak-08/Web-Homepage"><i class="fa-brands fa-github"></i></a>
-  <a href="https://m.youtube.com/channel/UCmhOhExrvc9MALNZ-WR9CzQ"><i class="fa-brands fa-youtube"></i></a>
+    <main>
+      <section class="search-section">
+        <input type="text" id="search" placeholder="Suche mit Google ..." autocomplete="off" />
+        <ul id="suggestions"></ul>
+      </section>
+
+      <section class="shortcuts">
+        <div class="shortcut" data-url="https://www.google.com">
+          <img src="https://www.google.com/favicon.ico" />
+          <span>Google</span>
+        </div>
+        <div class="shortcut" data-url="https://www.youtube.com">
+          <img src="https://www.youtube.com/favicon.ico" />
+          <span>YouTube</span>
+        </div>
+        <div class="shortcut" data-url="https://www.reddit.com">
+          <img src="https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png" />
+          <span>Reddit</span>
+        </div>
+        <div class="shortcut" data-url="https://mail.google.com">
+          <img src="https://mail.google.com/favicon.ico" />
+          <span>Gmail</span>
+        </div>
+        <div class="shortcut" data-url="https://openai.com">
+          <img src="https://openai.com/favicon.ico" />
+          <span>OpenAI</span>
+        </div>
+      </section>
+
+      <section class="info">
+        <div class="weather card">
+          <h2>Wetter</h2>
+          <div id="weather">Lade Wetter...</div>
+        </div>
+
+        <div class="news card">
+          <h2>Nachrichten</h2>
+          <div id="news">Lade News...</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Eigene Startseite – erstellt mit HTML, CSS & JS.</p>
+    </footer>
   </div>
-  <p> © 2024 Ronak Ameta.  All rights reserved. </p>
-</footer>
 
- 
-  	<script src="scripts.js"></script>
+  <script src="scripts.js"></script>
 </body>
 </html>
-
